@@ -1,0 +1,16 @@
+diff --git a/linux_build.sh b/linux_build.sh
+new file mode 100755
+index 00000000..c1f021db
+--- /dev/null
++++ b/linux_build.sh
+@@ -0,0 +1,10 @@
++#!/bin/sh
++
++SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
++if [ ! -d "shared_libs" ]; then
++mkdir shared_libs
++fi
++
++cd lib_acl && make shared rpath=${SHELL_FOLDER}/shared_libs
++cd ../lib_protocol && make shared rpath=${SHELL_FOLDER}/shared_libs
++cd ../lib_acl_cpp && make shared rpath=${SHELL_FOLDER}/shared_libs

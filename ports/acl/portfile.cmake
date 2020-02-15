@@ -1,4 +1,5 @@
 include(vcpkg_common_functions)
+include(vcpkg_build_make)
  
 if (VCPKG_TARGET_IS_WINDOWS)
     set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/acl/3.5.1-4229ba226c)
@@ -14,18 +15,24 @@ set(ACL_VERSION 3.5.1)
 
 set(ACL_BUILD_SHARED "YES")
 
-# if (VCPKG_CRT_LINKAGE STREQUAL static)
-    # set(DYNAMIC_PATCH "build_dll.patch")
-# endif()
-
 message(STATUS "Begin to extract files ...")
-vcpkg_extract_source_archive_ex(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REF ${ACL_VERSION}
-    ARCHIVE ${ARCHIVE} 
-    # PATCHES
-    #     ${DYNAMIC_PATCH}
-)
+if (VCPKG_TARGET_IS_LINUX)
+    
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
+        REF ${ACL_VERSION}
+        ARCHIVE ${ARCHIVE} 
+        PATCHES 
+            fix_linux_build.patch
+    )
+else()
+
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
+        REF ${ACL_VERSION}
+        ARCHIVE ${ARCHIVE} 
+    )
+endif()
 
 if (VCPKG_TARGET_IS_WINDOWS)
     message(STATUS "current platform: Windows")
@@ -70,7 +77,7 @@ if (VCPKG_TARGET_IS_WINDOWS)
         DEBUG_CONFIGURATION ${Debug_Configuration}
     )
 
-else()
+elseif(VCPKG_TARGET_IS_OSX)
 
     message(STATUS "current plateform: Apple or UNIX-like")
 
@@ -81,12 +88,18 @@ else()
     NO_CHARSET_FLAG
     OPTIONS
         -DACL_BUILD_SHARED="YES"
-    # OPTIONS -DUSE_THIS_IN_ALL_BUILDS=1 -DUSE_THIS_TOO=2
-    # OPTIONS_RELEASE -DOPTIMIZE=1
-    # OPTIONS_DEBUG -DDEBUGGABLE=1
     )
 
     vcpkg_build_cmake()
+elseif(VCPKG_TARGET_IS_LINUX)
+	message(STATUS "current plateform: Linux")
+	
+	vcpkg_configure_make(
+	    SOURCE_PATH ${SOURCE_PATH}
+	    SKIP_CONFIGURE
+	    NO_DEBUG
+	    PRERUN_SHELL linux_build.sh
+	)
 endif()
 
 
@@ -116,11 +129,14 @@ if (VCPKG_TARGET_IS_WINDOWS)
         file(COPY ${SOURCE_PATH}/lib_acl_cpp/lib_acl_cpp.dll DESTINATION ${CURRENT_PACKAGES_DIR}/bin)
         file(COPY ${SOURCE_PATH}/lib_acl_cpp/lib_acl_cpp.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
     endif()
-else()
+elseif (VCPKG_TARGET_IS_OSX)
     set(DBG_BINARY_DIR ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
     file(COPY ${DBG_BINARY_DIR}/lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug)
 
     set(REL_BINARY_DIR ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel)
     file(COPY ${REL_BINARY_DIR}/lib DESTINATION ${CURRENT_PACKAGES_DIR})
+elseif (VCPKG_TARGET_IS_LINUX)
+    file(COPY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/shared_libs/libacl.so DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
+    file(COPY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/shared_libs/libprotocol.so DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
+    file(COPY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/shared_libs/libacl_cpp.so DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
 endif()
-
