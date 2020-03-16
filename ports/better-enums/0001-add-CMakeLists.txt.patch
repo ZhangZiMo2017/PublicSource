@@ -1,6 +1,6 @@
-From f5c9eba1da06a2cc6ca8cdf6ab45a0faae4f4966 Mon Sep 17 00:00:00 2001
+From 26879a369aeceea98208099549c073d9f8bd9c68 Mon Sep 17 00:00:00 2001
 From: lanjian <lan_0032@163.com>
-Date: Mon, 16 Mar 2020 10:39:19 +0800
+Date: Mon, 16 Mar 2020 11:15:05 +0800
 Subject: [PATCH] add CMakeLists.txt
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH] add CMakeLists.txt
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 new file mode 100644
-index 0000000..2088174
+index 0000000..f0b11da
 --- /dev/null
 +++ b/CMakeLists.txt
 @@ -0,0 +1,19 @@
@@ -27,7 +27,7 @@ index 0000000..2088174
 +
 +install(
 +        EXPORT better-enums
-+        DESTINATION "share"
++        DESTINATION "share/better-enums"
 +        FILE better-enums-targets.cmake
 +)
 +
