@@ -1,0 +1,39 @@
+From f5c9eba1da06a2cc6ca8cdf6ab45a0faae4f4966 Mon Sep 17 00:00:00 2001
+From: lanjian <lan_0032@163.com>
+Date: Mon, 16 Mar 2020 10:39:19 +0800
+Subject: [PATCH] add CMakeLists.txt
+
+---
+ CMakeLists.txt | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..2088174
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,19 @@
++cmake_minimum_required(VERSION 3.8)
++project(better-enums)
++
++add_library(better-enums INTERFACE)
++
++# Export target
++install(TARGETS better-enums
++        EXPORT better-enums
++        INCLUDES DESTINATION include/
++)
++
++install(
++        EXPORT better-enums
++        DESTINATION "share"
++        FILE better-enums-targets.cmake
++)
++
++install(FILES enum.h
++        DESTINATION include)
+\ No newline at end of file
+-- 
+2.25.0.windows.1
+

@@ -1,0 +1,4 @@
+Source: better-enums
+Version: 0.11.2
+Homepage: http://aantron.github.io/better-enums
+Description: C++ compile-time enum to string, iteration, in a single header file
