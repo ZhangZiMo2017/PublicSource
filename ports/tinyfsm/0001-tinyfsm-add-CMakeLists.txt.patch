@@ -1,0 +1,39 @@
+From fcaad6ee1df1e7df184be1d83a5bc2e0204254f2 Mon Sep 17 00:00:00 2001
+From: lanjian <lan_0032@163.com>
+Date: Mon, 16 Mar 2020 11:19:44 +0800
+Subject: [PATCH] [tinyfsm] add CMakeLists.txt
+
+---
+ CMakeLists.txt | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..66807d2
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,19 @@
++cmake_minimum_required(VERSION 3.8)
++project(tinyfsm)
++
++add_library(tinyfsm INTERFACE)
++
++# Export target
++install(TARGETS tinyfsm
++        EXPORT tinyfsm
++        INCLUDES DESTINATION include/
++)
++
++install(
++        EXPORT tinyfsm
++        DESTINATION "share/tinyfsm"
++        FILE tinyfsm-targets.cmake
++)
++
++install(FILES include/tinyfsm.hpp
++        DESTINATION include)
+\ No newline at end of file
+-- 
+2.25.0.windows.1
+

@@ -1,0 +1,4 @@
+Source: tinyfsm
+Version: 0.3.2
+Homepage: https://digint.ch/tinyfsm
+Description: A simple C++ finite state machine library 
