@@ -1,0 +1,18 @@
+diff --git a/evpp/logging.h b/evpp/logging.h
+index 2afb610..5dd5866 100644
+--- a/evpp/logging.h
++++ b/evpp/logging.h
+@@ -11,10 +11,10 @@
+ #ifdef GOOGLE_STRIP_LOG
+ 
+ #if GOOGLE_STRIP_LOG == 0
+-#define LOG_TRACE LOG(INFO)
+-#define LOG_DEBUG LOG(INFO)
++#define LOG_TRACE LOG(TRACE)
++#define LOG_DEBUG LOG(DEBUG)
+ #define LOG_INFO  LOG(INFO)
+-#define DLOG_TRACE LOG(INFO) << __PRETTY_FUNCTION__ << " this=" << this << " "
++#define DLOG_TRACE LOG(TRACE) << __PRETTY_FUNCTION__ << " this=" << this << " "
+ #else
+ #define LOG_TRACE if (false) LOG(INFO)
+ #define LOG_DEBUG if (false) LOG(INFO)

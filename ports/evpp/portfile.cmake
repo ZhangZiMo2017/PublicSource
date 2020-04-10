@@ -12,6 +12,7 @@ vcpkg_from_github(
     PATCHES
         fix-rapidjson-1-1.patch
         fix-linux-build.patch
+	add_logging_level.patch
 )
 file(REMOVE_RECURSE ${SOURCE_PATH}/3rdparty/rapidjson ${SOURCE_PATH}/3rdparty/concurrentqueue)
 
