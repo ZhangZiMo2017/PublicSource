@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/aantron/better-enums/archive/0.11.1.zip"
     FILENAME "better-enums.zip"
-    SHA512 c748b7731a2738dcd7bbf3c746b6131d67a557fd792fa272fd348466245e035a9e7a8ca65c7243d4e8c4ab2a628164b9148385dbbf1acd45324d2f6ffeecc466
+    SHA512 61928591ee26926f0f870e711a1f8e70e92472f1b899b0c2d31f9124d841fd24af5552a7bb8893d58157459a9e8b4e29fae4e685ab5ff5872769df2df6da8fcd
 )
 
 set(VCPKG_BUILD_TYPE release)
