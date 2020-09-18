@@ -1,0 +1,128 @@
+diff --git a/src/filesink.cpp b/src/filesink.cpp
+index 7bd5b07..b264a56 100644
+--- a/src/filesink.cpp
++++ b/src/filesink.cpp
+@@ -21,24 +21,9 @@ namespace g3 {
+       , _outptr(new std::ofstream)
+       , _header("\t\tLOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen\n\t\t(uuu*: microseconds fractions of the seconds value)\n\n")
+       , _firstEntry(true)
++      , loggerID_(logger_id)
+    {
+-      _log_prefix_backup = prefixSanityFix(log_prefix);
+-      if (!isValidFilename(_log_prefix_backup)) {
+-         std::cerr << "g3log: forced abort due to illegal log prefix [" << log_prefix << "]" << std::endl;
+-         abort();
+-      }
+-
+-      std::string file_name = createLogFileName(_log_prefix_backup, logger_id);
+-      _log_file_with_path = pathSanityFix(_log_file_with_path, file_name);
+-      _outptr = createLogFile(_log_file_with_path);
+-
+-      if (!_outptr) {
+-         std::cerr << "Cannot write log file to location, attempting current directory" << std::endl;
+-         _log_file_with_path = "./" + file_name;
+-         _outptr = createLogFile(_log_file_with_path);
+-      }
+-      assert(_outptr && "cannot open log file at startup");
+-      
++       createLogFileDetails();
+    }
+ 
+ 
+@@ -59,6 +44,13 @@ namespace g3 {
+          _firstEntry = false;
+       }
+ 
++      auto now = getDate();
++      if (now != date_) {
++          changeLogFile("", loggerID_);
++
++          date_ = now;
++      }
++
+       std::ofstream &out(filestream());
+       out << message.get().toString(_log_details_func) << std::flush;
+    }
+@@ -107,4 +99,25 @@ namespace g3 {
+    void FileSink::addLogFileHeader() {
+       filestream() << header(_header);
+    }
++
++    void FileSink::createLogFileDetails() {
++        _log_prefix_backup = prefixSanityFix(_log_prefix_backup);
++        if (!isValidFilename(_log_prefix_backup)) {
++            std::cerr << "g3log: forced abort due to illegal log prefix [" << _log_prefix_backup << "]" << std::endl;
++            abort();
++        }
++
++        std::string file_name = createLogFileName(_log_prefix_backup, loggerID_);
++        _log_file_with_path = pathSanityFix(_log_file_with_path, file_name);
++        _outptr = createLogFile(_log_file_with_path);
++
++        if (!_outptr) {
++            std::cerr << "Cannot write log file to location, attempting current directory" << std::endl;
++            _log_file_with_path = "./" + file_name;
++            _outptr = createLogFile(_log_file_with_path);
++        }
++        assert(_outptr && "cannot open log file at startup");
++
++        date_ = getDate();
++    }
+ } // g3
+diff --git a/src/filesinkhelper.ipp b/src/filesinkhelper.ipp
+index cf6a721..1730768 100644
+--- a/src/filesinkhelper.ipp
++++ b/src/filesinkhelper.ipp
+@@ -20,7 +20,7 @@
+ 
+ namespace g3 {
+    namespace internal {
+-      static const std::string file_name_time_formatted = "%Y%m%d-%H%M%S";
++      static const std::string file_name_time_formatted = "%Y.%m.%d"/*"%Y%m%d-%H%M%S"*/;
+ 
+       // check for filename validity -  filename should not be part of PATH
+       bool isValidFilename(const std::string &prefix_filename) {
+@@ -99,7 +99,8 @@ namespace g3 {
+ 
+       bool openLogFile(const std::string &complete_file_with_path, std::ofstream &outstream) {
+          std::ios_base::openmode mode = std::ios_base::out; // for clarity: it's really overkill since it's an ofstream
+-         mode |= std::ios_base::trunc;
++         //mode |= std::ios_base::trunc;
++         mode |= std::ios_base::app;
+          outstream.open(complete_file_with_path, mode);
+          if (!outstream.is_open()) {
+             std::ostringstream ss_error;
+@@ -122,6 +123,8 @@ namespace g3 {
+          return out;
+       }
+ 
+-
++      std::string getDate() {
++          return g3::localtime_formatted(std::chrono::system_clock::now(), file_name_time_formatted);
++      }
+    }
+ }
+diff --git a/src/g3log/filesink.hpp b/src/g3log/filesink.hpp
+index 66d97a1..7420d76 100644
+--- a/src/g3log/filesink.hpp
++++ b/src/g3log/filesink.hpp
+@@ -25,6 +25,9 @@ namespace g3 {
+       void overrideLogHeader(const std::string& change);
+ 
+ 
++   private:
++       void createLogFileDetails();
++
+    private:
+       LogMessage::LogDetailsFunc _log_details_func;
+ 
+@@ -39,6 +42,9 @@ namespace g3 {
+          return *(_outptr.get());
+       }
+ 
++      std::string date_;
++      std::string loggerID_;
++
+ 
+       FileSink &operator=(const FileSink &) = delete;
+       FileSink(const FileSink &other) = delete;
