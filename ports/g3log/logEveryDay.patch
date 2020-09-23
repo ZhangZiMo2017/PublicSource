@@ -1,5 +1,5 @@
 diff --git a/src/filesink.cpp b/src/filesink.cpp
-index 7bd5b07..b264a56 100644
+index 7bd5b07..4f48798 100644
 --- a/src/filesink.cpp
 +++ b/src/filesink.cpp
 @@ -21,24 +21,9 @@ namespace g3 {
@@ -35,7 +35,7 @@ index 7bd5b07..b264a56 100644
  
 +      auto now = getDate();
 +      if (now != date_) {
-+          changeLogFile("", loggerID_);
++          changeLogFile(_log_file_with_path, loggerID_);
 +
 +          date_ = now;
 +      }
