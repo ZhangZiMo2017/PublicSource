@@ -5,42 +5,34 @@ if (VCPKG_TARGET_IS_WINDOWS)
     set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/acl/3.5.1-4229ba226c)
 endif()
 
-# vcpkg_download_distfile(ARCHIVE
-#     URLS "https://github.com/acl-dev/acl/archive/v3.5.1-1.zip"
-#     FILENAME "acl-3.5.1.zip"
-#     SHA512 6ec6f129884876842354976dee1c00b7c06047de66631dbb07a3a6cfba02055e719cc564ab5f031a81266d9561e6b566ae4deb3ffe072ecd9b1188089fffdc06
-# )
-
-# set(ACL_VERSION 3.5.1)
-set(ACL_VERSION 9d8a94786c68c08b07958bb5d398cc9878ab2319)
-
-vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO acl-dev/acl
-    REF 9d8a94786c68c08b07958bb5d398cc9878ab2319
-    SHA512 838e1e5762449a5917233e54e81ab929e28d25fe6071f4b84cd4c225dcc2f121a6d066518b298400579a9e06f0c0bc7cad676ee54d9076bf2f059588d0b4e76c
-    HEAD_REF master
+vcpkg_download_distfile(ARCHIVE
+    URLS "https://github.com/acl-dev/acl/archive/v3.5.1-1.zip"
+    FILENAME "acl-3.5.1.zip"
+    SHA512 6ec6f129884876842354976dee1c00b7c06047de66631dbb07a3a6cfba02055e719cc564ab5f031a81266d9561e6b566ae4deb3ffe072ecd9b1188089fffdc06
 )
+
+set(ACL_VERSION 3.5.1)
 
 set(ACL_BUILD_SHARED "YES")
 
 message(STATUS "Begin to extract files ...")
-# if (VCPKG_TARGET_IS_LINUX)
+if (VCPKG_TARGET_IS_LINUX)
     
-#     vcpkg_extract_source_archive_ex(
-#         OUT_SOURCE_PATH SOURCE_PATH
-#         REF ${ACL_VERSION}
-#         ARCHIVE ${ARCHIVE} 
-#         PATCHES 
-#             fix_linux_build.patch
-#     )
-# else()
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
+        REF ${ACL_VERSION}
+        ARCHIVE ${ARCHIVE} 
+        PATCHES 
+            fix_linux_build.patch
+    )
+else()
 
-#     vcpkg_extract_source_archive(
-#         OUT_SOURCE_PATH SOURCE_PATH
-#         REF ${ACL_VERSION}
-#     )
-# endif()
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
+        REF ${ACL_VERSION}
+        ARCHIVE ${ARCHIVE} 
+    )
+endif()
 
 if (VCPKG_TARGET_IS_WINDOWS)
     message(STATUS "current platform: Windows")

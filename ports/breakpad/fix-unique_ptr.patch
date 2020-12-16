@@ -1,5 +1,5 @@
 diff --git a/src/common/windows/pe_util.cc b/src/common/windows/pe_util.cc
-index 9f9e8fa..d912635 100644
+index 9c94af05..da007556 100644
 --- a/src/common/windows/pe_util.cc
 +++ b/src/common/windows/pe_util.cc
 @@ -28,7 +28,7 @@
@@ -11,3 +11,16 @@ index 9f9e8fa..d912635 100644
  #include <windows.h>
  #include <winnt.h>
  #include <atlbase.h>
+diff --git a/src/common/windows/pe_util.h b/src/common/windows/pe_util.h
+index 634ba293..1a0bd081 100644
+--- a/src/common/windows/pe_util.h
++++ b/src/common/windows/pe_util.h
+@@ -60,7 +60,7 @@ wstring GenerateDebugIdentifier(DWORD age, DWORD signature);
+ 
+ // Converts |machine| enum value to the corresponding string used by Breakpad.
+ // The enum is IMAGE_FILE_MACHINE_*, contained in winnt.h.
+-constexpr const wchar_t* FileHeaderMachineToCpuString(WORD machine) {
++/*constexpr*/ const wchar_t* FileHeaderMachineToCpuString(WORD machine) {
+   switch (machine) {
+     case IMAGE_FILE_MACHINE_I386: {
+       return L"x86";
