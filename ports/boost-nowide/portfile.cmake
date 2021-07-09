@@ -3,23 +3,22 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/nowide
-    REF boost-1.74.0
-    SHA512 bee853b992635be4f5937bd6b0abd36c541e6483482e4e31b3be9fb63af8ba04e0afea10b2b9d392fbea714dcb27d105275650e4889ebb726d2603e28fad839b
+    REF boost-1.76.0
+    SHA512 42acb8ef8d0c3ab01673814ada908dcfb6673c8fb6a4f056043b0a81bbeb9cc8bdd7b52febe0d06d5899d39af9717fa2e63f3678f7005e56d0bc4765e8a232c0
     HEAD_REF master
 )
 
 file(READ "${SOURCE_PATH}/build/Jamfile.v2" _contents)
-
 string(REPLACE "import ../../config/checks/config" "import config/checks/config" _contents "${_contents}")
-
-string(REPLACE "check-target-builds cxx11_moveable_fstreams" "check-target-builds ../check_movable_fstreams.cpp" _contents "${_contents}")
-string(REPLACE "check-target-builds lfs_support" "check-target-builds ../check_lfs_support.cpp" _contents "${_contents}")
-
+string(REPLACE "check-target-builds ../config//cxx11_moveable_fstreams" "check-target-builds ../check_movable_fstreams.cpp" _contents "${_contents}")
+string(REPLACE "check-target-builds ../config//lfs_support" "check-target-builds ../check_lfs_support.cpp" _contents "${_contents}")
 file(WRITE "${SOURCE_PATH}/build/Jamfile.v2" "${_contents}")
 file(COPY "${CURRENT_INSTALLED_DIR}/share/boost-config/checks" DESTINATION "${SOURCE_PATH}/build/config")
-
-file(COPY "${SOURCE_PATH}/test/check_lfs_support.cpp" "${SOURCE_PATH}/test/check_movable_fstreams.cpp" DESTINATION "${SOURCE_PATH}/build/config")
-include(${CURRENT_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
+file(COPY "${SOURCE_PATH}/config/check_lfs_support.cpp" "${SOURCE_PATH}/config/check_movable_fstreams.cpp" DESTINATION "${SOURCE_PATH}/build/config")
+if(NOT DEFINED CURRENT_HOST_INSTALLED_DIR)
+    message(FATAL_ERROR "boost-nowide requires a newer version of vcpkg in order to build.")
+endif()
+include(${CURRENT_HOST_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
 boost_modular_build(
     SOURCE_PATH ${SOURCE_PATH}
     BOOST_CMAKE_FRAGMENT "${CMAKE_CURRENT_LIST_DIR}/b2-options.cmake"

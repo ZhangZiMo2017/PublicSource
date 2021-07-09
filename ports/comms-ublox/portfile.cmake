@@ -3,8 +3,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO commschamp/cc.ublox.generated
-    REF v0.20
-    SHA512 ceb0a8c524ce0857e77eaf0971c062d86d3c5588507755095e8f8080ab665d88af9c69dd136a9c5a38a895496f03e2764d1e892ca16318a5494c02178f5d389a
+    REF v0.20.1
+    SHA512 a03a5e63a1430d91d0f8250da576abdf8c86c85a2673817c38f3c883c7a5b736113974c4b56a804174d7fbcdbd198851435f5589d715950427b55180fce70801
     HEAD_REF master
     PATCHES
         fix-comms.patch
@@ -21,8 +21,10 @@ vcpkg_configure_cmake(
 )
 vcpkg_install_cmake()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/ublox/cmake TARGET_PATH share/ublox)
+# currently this is only a header only library. after moving lib/ublox to share this lib path will be empty
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
 
 # Handle copyright
 file(INSTALL ${SOURCE_PATH}/LICENSE.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

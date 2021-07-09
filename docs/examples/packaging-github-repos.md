@@ -27,7 +27,7 @@ vcpkg_from_github(
 )
 ```
 
-The important parts to update are `REPO` for the GitHub repository path, `REF` for a stable tag/commit to use, and `SHA512` with the checksum of the downloaded zipfile (you can get this easily by setting it to `1`, trying to install the package, and copying the checksum).
+The important parts to update are `REPO` for the GitHub repository path, `REF` for a stable tag/commit to use, and `SHA512` with the checksum of the downloaded zipfile (you can get this easily by setting it to `0`, trying to install the package, and copying the checksum).
 
 Finally, we configure the project with CMake, install the package, and copy over the license file:
 
@@ -51,7 +51,6 @@ In the `ports/` directory are many libraries that can be used as examples, inclu
   - rapidjson
   - range-v3
 - MSBuild-based
-  - cppunit
   - mpg123
 - Non-CMake, custom buildsystem
   - openssl

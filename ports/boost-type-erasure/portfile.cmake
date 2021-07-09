@@ -3,12 +3,15 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/type_erasure
-    REF boost-1.74.0
-    SHA512 a8685ac4650048d1e2b6635b922c3432fb7b72541b03990ae6ef1b426487ce27b2fd4ec372582d141141232d788a236895f6a8d75e7a2f2ff676f1b1c0645e40
+    REF boost-1.76.0
+    SHA512 8f304de312dfb59d3d02d90f1806908bf91a74459c6ad156902bbc7d72ad326e98e07c43f6cef76b6b82ba37d3f074584722e04212100272cdea613e4c47104e
     HEAD_REF master
 )
 
-include(${CURRENT_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
+if(NOT DEFINED CURRENT_HOST_INSTALLED_DIR)
+    message(FATAL_ERROR "boost-type-erasure requires a newer version of vcpkg in order to build.")
+endif()
+include(${CURRENT_HOST_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
 boost_modular_build(SOURCE_PATH ${SOURCE_PATH})
 include(${CURRENT_INSTALLED_DIR}/share/boost-vcpkg-helpers/boost-modular-headers.cmake)
 boost_modular_headers(SOURCE_PATH ${SOURCE_PATH})

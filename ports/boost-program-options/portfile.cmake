@@ -3,12 +3,15 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/program_options
-    REF boost-1.74.0
-    SHA512 ba46b0e3c640355a0f84086d093379c7857d8491472a93e4b9730d95c7cd3bb1b77770ccc25e6bc0641ce4f7e3b7f632ef0a7685e34dd7844377664e4dd96547
+    REF boost-1.76.0
+    SHA512 5cbd02923de60da9b8b4ac232daabc4b3ac8c07f46d8de1a69576c331d1f13951166d4c61649328c68405d7e4d2cb2bf5996521a53c211f5399bd67acb546bce
     HEAD_REF master
 )
 
-include(${CURRENT_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
+if(NOT DEFINED CURRENT_HOST_INSTALLED_DIR)
+    message(FATAL_ERROR "boost-program-options requires a newer version of vcpkg in order to build.")
+endif()
+include(${CURRENT_HOST_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
 boost_modular_build(SOURCE_PATH ${SOURCE_PATH})
 include(${CURRENT_INSTALLED_DIR}/share/boost-vcpkg-helpers/boost-modular-headers.cmake)
 boost_modular_headers(SOURCE_PATH ${SOURCE_PATH})

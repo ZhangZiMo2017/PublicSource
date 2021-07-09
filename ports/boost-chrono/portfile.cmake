@@ -3,12 +3,15 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/chrono
-    REF boost-1.74.0
-    SHA512 c87bc2f70a312397bbb3d1a0659f0510ce7aea27b59aa0197159fce2bcc13e72100b5c10352fb9194398d3dbf23e99da8f9dfebd4e900ab208d9e68e655a3323
+    REF boost-1.76.0
+    SHA512 ebfea42589e69152256fb175175d753fbb86f96d988fd2678e0df82d6bf7c2e226c8223280ab044cbb1533a690692e23134ee09f665db38a5d1a7e10dd79da22
     HEAD_REF master
 )
 
-include(${CURRENT_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
+if(NOT DEFINED CURRENT_HOST_INSTALLED_DIR)
+    message(FATAL_ERROR "boost-chrono requires a newer version of vcpkg in order to build.")
+endif()
+include(${CURRENT_HOST_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
 boost_modular_build(SOURCE_PATH ${SOURCE_PATH})
 include(${CURRENT_INSTALLED_DIR}/share/boost-vcpkg-helpers/boost-modular-headers.cmake)
 boost_modular_headers(SOURCE_PATH ${SOURCE_PATH})

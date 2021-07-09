@@ -3,8 +3,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/geometry
-    REF boost-1.74.0
-    SHA512 5e99b833b3509e24e3e76ed32c394051c6fd3a2cbdf4fe6490c5f803cf944b56704df309aee6712da33edd398be1f62fbda7a7f84a693d1c1bda0cf8875a83b2
+    REF boost-1.76.0
+    SHA512 2ae1af6337cbb820cef2c34c24b55fb032e4b57ead2a5fc5ee041a083f08e1c35c873e94a135d1c990809e1f160d19aedb31d8a1715f2c211361279fd9707236
     HEAD_REF master
 )
 

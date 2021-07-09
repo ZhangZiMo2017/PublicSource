@@ -3,14 +3,13 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO facebook/wangle
-    REF 4bf3896ad5e938a01ba20efaf1ea59317d846fb2 # v2020.10.19.00
-    SHA512 1c21199225ebfe9a95391c2bb607412ebadc7aac326373e30dc9d49223a2437b382b4c3160fb2147a505bc2182f03f651c95f7c67f916e336ac81af76884f5fa
+    REF v2021.06.14.00
+    SHA512 15fd2c9515ec3d0c3293a8f96d01d3e91e2ef82694d592aae6573648957f691a7da5d7c2aef7391a827a67e2f58fef7668778e0f0323aac11c5b16a1ba889cc3
     HEAD_REF master
     PATCHES
-        build.patch
         fix-config-cmake.patch
+        fix_dependency.patch
 )
-# message(FATAL_ERROR "patch")
 
 vcpkg_configure_cmake(
     SOURCE_PATH "${SOURCE_PATH}/wangle"
@@ -39,6 +38,5 @@ file(REMOVE_RECURSE
     ${CURRENT_PACKAGES_DIR}/include/wangle/deprecated/rx/test
 )
 
-
-file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 file(INSTALL ${CURRENT_PORT_DIR}/usage DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT})
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
