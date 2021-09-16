@@ -1,0 +1,164 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..093a305
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,39 @@
++cmake_minimum_required(VERSION 3.0)
++project(mmkv)
++
++add_definitions(
++        -D_CRT_SECURE_NO_WARNINGS
++)
++
++set(SRC_PATH Core Core/aes Core/aes/openssl Core/crc32 Core/crc32/zlib)
++
++include_directories(${SRC_PATH})
++foreach (p ${SRC_PATH})
++    aux_source_directory(${p} SRC_FILES)
++endforeach ()
++
++option(BUILD_WITH_CRYPT "use mmkv crypt" OFF)
++if (${BUILD_WITH_CRYPT})
++    add_definitions(-DMMKV_DISABLE_CRYPT)
++endif ()
++
++option(BUILD_SHARED_LIBS "build mmkv to shared libary" ON)
++if (${BUILD_SHARED_LIBS})
++    add_definitions(
++            -DMMKV_BUILD_SHARED
++    )
++    add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
++else ()
++    add_library(${PROJECT_NAME} ${SRC_FILES})
++endif ()
++set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
++
++INSTALL(FILES Core/MMKV.h Core/MMBuffer.h Core/MMKVPredef.h DESTINATION include)
++
++INSTALL(TARGETS ${PROJECT_NAME}
++        EXPORT ${PROJECT_NAME}Targets
++        RUNTIME DESTINATION bin
++        ARCHIVE DESTINATION lib
++        LIBRARY DESTINATION lib)
++
++INSTALL(EXPORT ${PROJECT_NAME}Targets FILE mmkvConfig.cmake DESTINATION share/mmkv)
+\ No newline at end of file
+diff --git a/Core/MMBuffer.h b/Core/MMBuffer.h
+index d5ce47e..77ab238 100644
+--- a/Core/MMBuffer.h
++++ b/Core/MMBuffer.h
+@@ -40,7 +40,7 @@ enum MMBufferCopyFlag : bool {
+ struct KeyValueHolderCrypt;
+ #endif
+ 
+-class MMBuffer {
++class MMKV_BUILD_EXPORT MMBuffer {
+     enum MMBufferType : uint8_t {
+         MMBufferType_Small,  // store small buffer in stack memory
+         MMBufferType_Normal, // store in heap memory
+diff --git a/Core/MMKV.h b/Core/MMKV.h
+index 2f59fc8..df01ada 100644
+--- a/Core/MMKV.h
++++ b/Core/MMKV.h
+@@ -46,7 +46,7 @@ enum MMKVMode : uint32_t {
+ #endif
+ };
+ 
+-class MMKV {
++class MMKV_BUILD_EXPORT MMKV {
+ #ifndef MMKV_ANDROID
+     std::string m_mmapKey;
+     MMKV(const std::string &mmapID, MMKVMode mode, std::string *cryptKey, MMKVPath_t *rootPath);
+diff --git a/Core/MMKVPredef.h b/Core/MMKVPredef.h
+index bc40377..5b5cafe 100755
+--- a/Core/MMKVPredef.h
++++ b/Core/MMKVPredef.h
+@@ -44,6 +44,8 @@ constexpr auto MMKV_VERSION = "v1.2.10";
+ #    undef MMKV_DEBUG
+ #endif
+ 
++#define MMKV_BUILD_EXPORT
++
+ #ifdef __ANDROID__
+ #    ifdef FORCE_POSIX
+ #        define MMKV_POSIX
+@@ -70,6 +72,15 @@ constexpr auto MMKV_VERSION = "v1.2.10";
+ #    endif
+ #elif _WIN32
+ #    define MMKV_WIN32
++
++#undef MMKV_BUILD_EXPORT
++
++#ifdef MMKV_BUILD_SHARED
++#define MMKV_BUILD_EXPORT __declspec(dllexport)
++#else
++#define MMKV_BUILD_EXPORT __declspec(dllimport)
++#        endif
++
+ #endif
+ 
+ #ifdef MMKV_WIN32
+diff --git a/Core/MemoryFile_Win32.cpp b/Core/MemoryFile_Win32.cpp
+index 32b44ea..4b3c8b9 100644
+--- a/Core/MemoryFile_Win32.cpp
++++ b/Core/MemoryFile_Win32.cpp
+@@ -42,7 +42,7 @@ MemoryFile::MemoryFile(const MMKVPath_t &path)
+ }
+ 
+ bool MemoryFile::truncate(size_t size) {
+-    if (m_fd < 0) {
++    if (reinterpret_cast<int>(m_fd) < 0) {
+         return false;
+     }
+     if (size == m_size) {
+@@ -127,7 +127,7 @@ void MemoryFile::reloadFromFile() {
+     }
+ 
+     m_fd =
+-        CreateFile(m_name.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
++        CreateFile(reinterpret_cast<LPCSTR>(m_name.c_str()), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                    nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+     if (m_fd == INVALID_HANDLE_VALUE) {
+         MMKVError("fail to open:%ws, %d", m_name.c_str(), GetLastError());
+@@ -181,7 +181,7 @@ bool isFileExist(const MMKVPath_t &nsFilePath) {
+     if (nsFilePath.empty()) {
+         return false;
+     }
+-    auto attribute = GetFileAttributes(nsFilePath.c_str());
++    auto attribute = GetFileAttributes(reinterpret_cast<LPCSTR>(nsFilePath.c_str()));
+     return (attribute != INVALID_FILE_ATTRIBUTES);
+ }
+ 
+@@ -198,9 +198,9 @@ bool mkPath(const MMKVPath_t &str) {
+         done = (*slash == L'\0');
+         *slash = L'\0';
+ 
+-        auto attribute = GetFileAttributes(path);
++        auto attribute = GetFileAttributes(reinterpret_cast<LPCSTR>(path));
+         if (attribute == INVALID_FILE_ATTRIBUTES) {
+-            if (!CreateDirectory(path, nullptr)) {
++            if (!CreateDirectory(reinterpret_cast<LPCSTR>(path), nullptr)) {
+                 MMKVError("fail to create dir:%ws, %d", str.c_str(), GetLastError());
+                 free(path);
+                 return false;
+@@ -219,7 +219,7 @@ bool mkPath(const MMKVPath_t &str) {
+ 
+ MMBuffer *readWholeFile(const MMKVPath_t &nsFilePath) {
+     MMBuffer *buffer = nullptr;
+-    auto fd = CreateFile(nsFilePath.c_str(), GENERIC_READ | GENERIC_WRITE,
++    auto fd = CreateFile(reinterpret_cast<LPCSTR>(nsFilePath.c_str()), GENERIC_READ | GENERIC_WRITE,
+                          FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
+                          FILE_ATTRIBUTE_NORMAL, nullptr);
+     if (fd != INVALID_HANDLE_VALUE) {
+diff --git a/mmkvConfig.cmake b/mmkvConfig.cmake
+new file mode 100644
+index 0000000..d83971a
+--- /dev/null
++++ b/mmkvConfig.cmake
+@@ -0,0 +1,5 @@
++include ("${CMAKE_CURRENT_LIST_DIR}/mmkvTargets.cmake")
++
++set_and_check(MMKV_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
++set_and_check(MMKV_LIBRARIES mmkv)
++check_required_components(mmkv)
