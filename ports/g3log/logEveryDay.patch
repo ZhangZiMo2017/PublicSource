@@ -1,17 +1,14 @@
 diff --git a/src/filesink.cpp b/src/filesink.cpp
-index 7bd5b07..4fc8a0c 100644
+index 5e9274c..2730809 100644
 --- a/src/filesink.cpp
 +++ b/src/filesink.cpp
-@@ -16,29 +16,15 @@ namespace g3 {
- 
-    FileSink::FileSink(const std::string &log_prefix, const std::string &log_directory, const std::string& logger_id)
+@@ -18,26 +18,13 @@ namespace g3 {
        : _log_details_func(&LogMessage::DefaultLogDetailsToString)
--      ,_log_file_with_path(log_directory)
-+      , _log_file_with_path(log_directory)
+       ,_log_file_with_path(log_directory)
        , _log_prefix_backup(log_prefix)
 +      , _log_file_path(log_directory)
        , _outptr(new std::ofstream)
-       , _header("\t\tLOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen\n\t\t(uuu*: microseconds fractions of the seconds value)\n\n")
+       , _header("\t\tLOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] message\n\n\t\t(uuu*: microseconds fractions of the seconds value)\n\n")
        , _firstEntry(true)
 +      , loggerID_(logger_id)
     {
@@ -31,12 +28,11 @@ index 7bd5b07..4fc8a0c 100644
 -         _outptr = createLogFile(_log_file_with_path);
 -      }
 -      assert(_outptr && "cannot open log file at startup");
--      
 +       createLogFileDetails();
     }
  
  
-@@ -59,6 +45,13 @@ namespace g3 {
+@@ -58,6 +45,13 @@ namespace g3 {
           _firstEntry = false;
        }
  
@@ -50,7 +46,7 @@ index 7bd5b07..4fc8a0c 100644
        std::ofstream &out(filestream());
        out << message.get().toString(_log_details_func) << std::flush;
     }
-@@ -107,4 +100,25 @@ namespace g3 {
+@@ -106,4 +100,25 @@ namespace g3 {
     void FileSink::addLogFileHeader() {
        filestream() << header(_header);
     }

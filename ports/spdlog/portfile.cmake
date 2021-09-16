@@ -36,6 +36,7 @@ vcpkg_cmake_configure(
         -DSPDLOG_BUILD_SHARED=${SPDLOG_BUILD_SHARED}
         -DSPDLOG_WCHAR_FILENAMES=${SPDLOG_WCHAR_FILENAMES}
         -DSPDLOG_BUILD_EXAMPLE=OFF
+        -DSPDLOG_WCHAR_TO_UTF8_SUPPORT=ON
 )
 
 vcpkg_cmake_install()
