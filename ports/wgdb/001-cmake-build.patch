@@ -1,0 +1,29 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..a7fb870
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,22 @@
++cmake_minimum_required(VERSION 3.0)
++project(wgdb)
++
++aux_source_directory(Db SRC_FILES)
++aux_source_directory(json SRC_FILES)
++
++include_directories(
++        Db
++        json
++        ${CMAKE_SOURCE_DIR}
++)
++
++add_library(${PROJECT_NAME} SHARED ${SRC_FILES} wgdb.def)
++set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
++
++install(FILES Db/dbapi.h DESTINATION include)
++install(TARGETS ${PROJECT_NAME}
++        EXPORT ${PROJECT_NAME}Targets
++        RUNTIME DESTINATION bin
++        ARCHIVE DESTINATION lib
++        LIBRARY DESTINATION lib)
++install(EXPORT ${PROJECT_NAME}Targets FILE ${PROJECT_NAME}Config.cmake DESTINATION share/wgdb)
+\ No newline at end of file

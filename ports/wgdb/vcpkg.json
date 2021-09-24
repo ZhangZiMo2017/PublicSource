@@ -1,0 +1,6 @@
+{
+  "name": "wgdb",
+  "version-string": "0.8",
+  "homepage": "http://whitedb.org/",
+  "description": "WhiteDB is a lightweight database library operating fully in main memory. Disk is used only for dumping/restoring database and logging."
+}

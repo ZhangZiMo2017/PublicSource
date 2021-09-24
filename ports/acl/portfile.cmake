@@ -1,17 +1,16 @@
-include(vcpkg_common_functions)
 include(vcpkg_build_make)
  
 if (VCPKG_TARGET_IS_WINDOWS)
-    set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/acl/3.5.1-4229ba226c)
+    set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/acl/3.5.3-0-4229ba226c)
 endif()
 
 vcpkg_download_distfile(ARCHIVE
-    URLS "https://github.com/acl-dev/acl/archive/v3.5.1-1.zip"
-    FILENAME "acl-3.5.1.zip"
-    SHA512 6ec6f129884876842354976dee1c00b7c06047de66631dbb07a3a6cfba02055e719cc564ab5f031a81266d9561e6b566ae4deb3ffe072ecd9b1188089fffdc06
+    URLS "https://github.com/acl-dev/acl/archive/refs/tags/v3.5.3-0.tar.gz"
+    FILENAME "v3.5.3-0.tar.gz"
+    SHA512 da14f3a8fd67405a73ae7e382efeb816c6fb7305f72534fe3ba54004ba41b9584c368c467faf9f51fef8dd0aed91202df70ff15be91aa1ab7e5d786246689bbd
 )
 
-set(ACL_VERSION 3.5.1)
+set(ACL_VERSION 3.5.3-0)
 
 set(ACL_BUILD_SHARED "YES")
 
