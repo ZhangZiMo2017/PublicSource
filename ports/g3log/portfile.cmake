@@ -2,12 +2,12 @@ vcpkg_fail_port_install(ON_ARCH "arm" ON_TARGET "uwp")
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO KjellKod/g3log
-    REF 2fca06ff6da5c67465b591f4d45e8fd14d531142 #v1.3.4
-    SHA512 8dba89e5a08e44d585478470725e25e37486685d8fe4d3cb5e97c81013389c95d96bdde658244e425008169bc8a9fc2d34a065b83b110c62e73d3ccab9b2b9e1
+    REPO zh1an/g3log
+    REF c9c46e29c52e07b94c0b693d8e073b26808da62d #v1.3.4
+    SHA512 49607959f00f7675644d7f3dcf630c292aec1dd074144a7c9dc34ab2582a1dba046acbec1100a741227aeda65bbe99a046ebe5f14f76bfcf09135d8d7613b662
     HEAD_REF master
-    PATCHES
-        logEveryDay.patch
+    # PATCHES
+    #     logEveryDay.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" G3_SHARED_LIB)
