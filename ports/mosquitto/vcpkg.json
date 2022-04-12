@@ -6,8 +6,6 @@
   "homepage": "https://mosquitto.org/download/",
   "dependencies": [
     "c-ares",
-    "libwebsockets",
-    "openssl",
     "pthreads"
   ]
 }
