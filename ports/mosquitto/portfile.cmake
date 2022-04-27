@@ -17,10 +17,9 @@ vcpkg_configure_cmake(
     PREFER_NINJA
     OPTIONS
         -DWITH_SRV=OFF
-        -DWITH_WEBSOCKETS=OFF
-        -DWITH_SOCKS=OFF
-        -DWITH_TLS=OFF
-        -DWITH_TLS_PSK=OFF
+        -DWITH_WEBSOCKETS=ON
+        -DWITH_TLS=ON
+        -DWITH_TLS_PSK=ON
         -DWITH_THREADING=ON
         -DDOCUMENTATION=OFF
     OPTIONS_RELEASE
